@@ -5,10 +5,9 @@
 <title>⚡ PABLO & ARIELE SIMULATOR ⚡</title>
 <style>
 body {
-    margin:0;
-    padding:0;
-    font-family: 'Courier New', monospace;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    margin:0; padding:0;
+    font-family:'Courier New', monospace;
+    background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);
     color:#0ff;
 }
 h1 {
@@ -19,50 +18,28 @@ h1 {
     margin:30px 0;
 }
 #menu-container {
-    display:flex;
-    justify-content:center;
-    gap:20px;
-    margin-bottom:30px;
+    display:flex; justify-content:center; gap:20px; flex-wrap:wrap;
+    margin-bottom:20px;
 }
 button {
-    padding:15px 35px;
-    border:2px solid #0ff;
-    border-radius:12px;
-    background:#001f2d;
-    color:#0ff;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.3s;
-    text-shadow:0 0 5px #0ff;
+    padding:15px 35px; border:2px solid #0ff; border-radius:12px;
+    background:#001f2d; color:#0ff; font-weight:bold; cursor:pointer;
+    transition:0.3s; text-shadow:0 0 5px #0ff;
 }
 button:hover {
-    background:#0ff;
-    color:#001f2d;
-    transform:scale(1.05);
+    background:#0ff; color:#001f2d; transform:scale(1.05);
     box-shadow:0 0 15px #0ff,0 0 25px #0ff inset;
 }
 #output {
-    background: rgba(0,0,0,0.85);
-    margin:auto;
-    max-width:800px;
-    min-height:300px;
-    padding:25px;
-    border-radius:18px;
-    box-shadow:0 0 20px #0ff,0 0 40px #0ff inset;
-    font-size:16px;
-    color:#0ff;
-    text-shadow:0 0 5px #0ff;
-    line-height:1.6;
-    overflow-y:auto;
+    background: rgba(0,0,0,0.9); margin:auto; max-width:900px;
+    min-height:500px; padding:25px; border-radius:18px;
+    box-shadow:0 0 30px #0ff,0 0 60px #0ff inset;
+    font-size:18px; color:#0ff; text-shadow:0 0 5px #0ff;
+    line-height:1.6; overflow-y:auto;
 }
 input[type=text] {
-    padding:10px;
-    border-radius:10px;
-    border:2px solid #0ff;
-    background:#001f2d;
-    color:#0ff;
-    margin-right:10px;
-    font-size:16px;
+    padding:10px; border-radius:10px; border:2px solid #0ff;
+    background:#001f2d; color:#0ff; margin-right:10px; font-size:16px;
 }
 .fade {animation: fadeIn 1s forwards;}
 @keyframes fadeIn {from{opacity:0;} to{opacity:1;}}
@@ -73,47 +50,76 @@ input[type=text] {
 <h1>⚡ PABLO & ARIELE SIMULATOR ⚡</h1>
 
 <div id="menu-container">
-    <button onclick="showMenu()">/menu</button>
-    <button onclick="pablo()">/pablo</button>
-    <button onclick="loveGenerator()">/lovegenerator</button>
-    <button onclick="cartinhas()">/cartinhas</button>
+    <button onclick="writeCommand('/menu')">/menu</button>
+    <button onclick="writeCommand('/pablo')">/pablo</button>
+    <button onclick="writeCommand('/lovegenerator')">/lovegenerator</button>
+    <button onclick="writeCommand('/cartinhas')">/cartinhas</button>
+    <button onclick="writeCommand('/cadastrar')">/cadastrar</button>
+    <button onclick="writeCommand('/membros')">/membros</button>
 </div>
 
-<div id="output">
-    ⚙️ Bem-vindo! Use os comandos acima para iniciar a simulação...
+<div id="output" contenteditable="true" spellcheck="false">
+⚙️ Digite um comando ou clique nos botões acima...
 </div>
 
 <script>
-const output=document.getElementById('output');
+const output = document.getElementById('output');
+let members = [];
+
+// ================= Função de escrever comandos na caixa =================
+function writeCommand(cmd){
+    output.innerText = cmd;
+    processCommand(cmd);
+}
+
+// ================= Processa comando digitado =================
+output.addEventListener('keydown', function(e){
+    if(e.key==='Enter'){
+        e.preventDefault();
+        const cmd = output.innerText.trim();
+        processCommand(cmd);
+    }
+});
+
+function processCommand(cmd){
+    cmd = cmd.toLowerCase();
+    if(cmd==='/menu') showMenu();
+    else if(cmd==='/pablo') pablo();
+    else if(cmd==='/lovegenerator') loveGenerator();
+    else if(cmd==='/cartinhas') cartinhas();
+    else if(cmd==='/cadastrar') cadastrar();
+    else if(cmd==='/membros') showMembers();
+    else{
+        output.innerHTML = '❌ Comando desconhecido! Use /menu para ver os comandos disponíveis.';
+    }
+}
 
 // ================= MENU =================
 function showMenu(){
-    output.innerHTML='';
-    const menuText=document.createElement('div');
-    menuText.className='fade';
-    menuText.innerHTML="📜 Comandos disponíveis:<br>⚡ /pablo - Interaja com Pablo<br>💖 /lovegenerator - Descubra porcentagem de amor<br>✉️ /cartinhas - Receba uma cartinha personalizada<br>🔄 /menu - Mostrar este menu novamente";
+    output.innerHTML = '';
+    const menuText = document.createElement('div');
+    menuText.className = 'fade';
+    menuText.innerHTML = "📜 Comandos disponíveis:<br>⚡ /pablo - Interaja com Pablo<br>💖 /lovegenerator - Descubra porcentagem de amor<br>✉️ /cartinhas - Receba uma cartinha personalizada<br>📝 /cadastrar - Cadastre seu nome<br>👥 /membros - Lista os membros cadastrados<br>🔄 /menu - Mostrar este menu novamente";
     output.appendChild(menuText);
 }
 
 // ================= /PABLO =================
 function pablo(){
     output.innerHTML='';
-    const pergunta=document.createElement('div');
+    const pergunta = document.createElement('div');
     pergunta.className='fade';
     pergunta.innerHTML="💬 Pablo: Você é a Ariele? (sim/não)";
     output.appendChild(pergunta);
 
-    const input=document.createElement('input');
-    input.type='text';
-    input.placeholder='Digite sim ou não';
+    const input = document.createElement('input');
+    input.type='text'; input.placeholder='Digite sim ou não';
     output.appendChild(input);
 
-    const btn=document.createElement('button');
-    btn.innerText='⧉ Enviar ⧉';
+    const btn = document.createElement('button'); btn.innerText='⧉ Enviar ⧉';
     output.appendChild(btn);
 
-    btn.onclick=()=>{
-        const val=input.value.trim().toLowerCase();
+    btn.onclick = () => {
+        const val = input.value.trim().toLowerCase();
         if(val==='sim'){
             output.innerHTML='';
             const mensagens=[
@@ -124,9 +130,8 @@ function pablo(){
             ];
             mensagens.forEach((m,i)=>{
                 setTimeout(()=>{
-                    const d=document.createElement('div');
-                    d.className='fade';
-                    d.innerHTML=m;
+                    const d = document.createElement('div');
+                    d.className='fade'; d.innerHTML=m;
                     output.appendChild(d);
                 }, i*1300);
             });
@@ -139,64 +144,54 @@ function pablo(){
 // ================= /LOVE GENERATOR =================
 function loveGenerator(){
     output.innerHTML='';
-    const label=document.createElement('div');
-    label.className='fade';
-    label.innerHTML='💖 Digite as iniciais (Ex: A+P):';
-    output.appendChild(label);
+    const label=document.createElement('div'); label.className='fade';
+    label.innerHTML='💖 Digite as iniciais (Ex: A+P, A+N):'; output.appendChild(label);
 
-    const input=document.createElement('input');
-    input.type='text';
-    input.placeholder='Ex: A+P';
+    const input=document.createElement('input'); input.type='text'; input.placeholder='Ex: A+P';
     output.appendChild(input);
 
-    const btn=document.createElement('button');
-    btn.innerText='⧉ Calcular ⧉';
-    output.appendChild(btn);
+    const btn=document.createElement('button'); btn.innerText='⧉ Calcular ⧉'; output.appendChild(btn);
 
     btn.onclick=()=>{
         const val=input.value.trim().toUpperCase().replace(/\s/g,'');
         if(!val.includes('+') || val.length<3){
-            output.innerHTML='❌ Error: Bota as iniciais aí!';
-            return;
+            output.innerHTML='❌ Error: Bota as iniciais aí!'; return;
         }
-        const parts=val.split('+');
-        const c1=parts[0];
-        const c2=parts[1];
+        const parts=val.split('+'); const c1=parts[0]; const c2=parts[1];
 
         let percent;
-        if((c1==='A' && c2==='P')||(c1==='P' && c2==='A')) percent=100;
-        else if((c1==='L' && c2==='J')||(c1==='J' && c2==='L')) percent=Math.random()<0.67?100:Math.floor(Math.random()*101);
-        else percent=Math.floor(Math.random()*101);
+        if((c1==='A' && c2==='N')||(c1==='N' && c2==='A')){
+            percent='10101010101010292929100%';
+        }
+        else if((c1==='A' && c2==='P')||(c1==='P' && c2==='A')){
+            percent='1000000%';
+        }
+        else if((c1==='J' && c2==='L')||(c1==='L' && c2==='J')){
+            percent = Math.random()<0.4? '100%' : Math.floor(Math.random()*101)+'%';
+        }
+        else{
+            const rnd = Math.floor(Math.random()*101);
+            percent = rnd===100? '100%' : rnd+'%';
+        }
 
         output.innerHTML='';
-        const resultado=document.createElement('div');
-        resultado.className='fade';
+        const resultado=document.createElement('div'); resultado.className='fade';
+        resultado.innerHTML=`💘 Amor entre ${c1}+${c2}: ${percent} ⧉`;
         output.appendChild(resultado);
-
-        let count=0;
-        const interval=setInterval(()=>{
-            if(count>percent) clearInterval(interval);
-            resultado.innerHTML=`💘 Amor entre ${c1}+${c2}: ${count}% ⧉`;
-            count++;
-        },20);
     };
 }
 
 // ================= /CARTINHAS =================
 function cartinhas(){
     output.innerHTML='';
-    const pergunta=document.createElement('div');
-    pergunta.className='fade';
+    const pergunta=document.createElement('div'); pergunta.className='fade';
     pergunta.innerHTML="👤 A cartinha é para um homem ou uma mulher?";
     output.appendChild(pergunta);
 
-    const input=document.createElement('input');
-    input.type='text';
-    input.placeholder='homem/mulher';
+    const input=document.createElement('input'); input.type='text'; input.placeholder='homem/mulher';
     output.appendChild(input);
 
-    const btn=document.createElement('button');
-    btn.innerText='⧉ Enviar ⧉';
+    const btn=document.createElement('button'); btn.innerText='⧉ Enviar ⧉';
     output.appendChild(btn);
 
     btn.onclick=()=>{
@@ -206,31 +201,78 @@ function cartinhas(){
             cartas=[
                 "🌟 ⧉ Ele é incrível, talentoso e forte! 💪",
                 "⚡ ⧉ Nunca duvide de sua coragem e inteligência! ✨",
-                "💌 ⧉ Um abraço virtual cheio de energia positiva! 🔹"
+                "💌 ⧉ Um abraço virtual cheio de energia positiva! 🔹",
+                "🔥 ⧉ Continue brilhando em cada desafio!"
             ];
         } else if(val==='mulher'){
             cartas=[
                 "🌹 ⧉ Ela é maravilhosa, brilhante e cheia de vida! 💫",
                 "💖 ⧉ Todos ao redor sentem sua alegria contagiante! ✨",
-                "💌 ⧉ Um abraço virtual cheio de carinho e luz! 🔹"
+                "💌 ⧉ Um abraço virtual cheio de carinho e luz! 🔹",
+                "🌈 ⧉ Nunca perca sua luz e energia positiva!"
             ];
-        } else {
-            output.innerHTML="❌ Error: Responda homem ou mulher!";
-            return;
+        } else{
+            output.innerHTML="❌ Error: Responda homem ou mulher!"; return;
         }
 
         output.innerHTML='';
         cartas.forEach((c,i)=>{
             setTimeout(()=>{
-                const d=document.createElement('div');
-                d.className='fade';
-                d.style.fontSize='18px';
-                d.innerHTML=c;
-                output.appendChild(d);
+                const d=document.createElement('div'); d.className='fade';
+                d.style.fontSize='18px'; d.innerHTML=c; output.appendChild(d);
             }, i*1400);
         });
     };
 }
+
+// ================= /CADASTRAR =================
+function cadastrar(){
+    output.innerHTML='';
+    const label=document.createElement('div'); label.className='fade';
+    label.innerHTML='📝 Digite seu nome para cadastrar:'; output.appendChild(label);
+
+    const input=document.createElement('input'); input.type='text'; input.placeholder='Seu nome';
+    output.appendChild(input);
+
+    const btn=document.createElement('button'); btn.innerText='Cadastrar'; output.appendChild(btn);
+
+    btn.onclick=()=>{
+        const nome=input.value.trim();
+        if(!nome){
+            output.innerHTML='❌ Error: Digite um nome!';
+            return;
+        }
+        members.push(nome);
+        output.innerHTML=`✅ Nome "${nome}" cadastrado com sucesso!`;
+    };
+}
+
+// ================= /MEMBROS =================
+function showMembers(){
+    output.innerHTML='';
+    const searchDiv=document.createElement('div'); searchDiv.className='fade';
+    searchDiv.innerHTML='🔎 Pesquise membros:';
+    output.appendChild(searchDiv);
+
+    const searchInput=document.createElement('input'); searchInput.type='text'; searchInput.placeholder='Digite para filtrar';
+    output.appendChild(searchInput);
+
+    const listDiv=document.createElement('div'); listDiv.style.marginTop='15px';
+    output.appendChild(listDiv);
+
+    function refreshList(filter){
+        listDiv.innerHTML='';
+        const filtered = members.filter(n=>n.toLowerCase().includes(filter.toLowerCase()));
+        if(filtered.length===0) listDiv.innerHTML='⚠️ Nenhum membro encontrado.';
+        filtered.forEach(n=>{
+            const div = document.createElement('div'); div.className='fade';
+            div.innerHTML='👤 '+n; listDiv.appendChild(div);
+        });
+    }
+    refreshList('');
+
+    searchInput.addEventListener('input',()=>refreshList(searchInput.value));
+}
 </script>
 </body>
-  </html>
+    </html>
